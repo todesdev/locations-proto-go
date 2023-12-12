@@ -668,6 +668,7 @@ var WorldRegionClustersService_ServiceDesc = grpc.ServiceDesc{
 type WorldRegionsServiceClient interface {
 	GetAllWorldRegions(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (WorldRegionsService_GetAllWorldRegionsClient, error)
 	GetWorldRegionByPublicId(ctx context.Context, in *PublicIdRequest, opts ...grpc.CallOption) (*WorldRegionResponse, error)
+	GetWorldRegionsByWorldRegionClusterPublicId(ctx context.Context, in *WorldRegionClusterPublicIdRequest, opts ...grpc.CallOption) (WorldRegionsService_GetWorldRegionsByWorldRegionClusterPublicIdClient, error)
 	SearchWorldRegions(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (WorldRegionsService_SearchWorldRegionsClient, error)
 	CreateWorldRegion(ctx context.Context, in *WorldRegionRequest, opts ...grpc.CallOption) (*WorldRegionResponse, error)
 	UpdateWorldRegion(ctx context.Context, in *UpdateWorldRegionRequest, opts ...grpc.CallOption) (*WorldRegionResponse, error)
@@ -723,8 +724,40 @@ func (c *worldRegionsServiceClient) GetWorldRegionByPublicId(ctx context.Context
 	return out, nil
 }
 
+func (c *worldRegionsServiceClient) GetWorldRegionsByWorldRegionClusterPublicId(ctx context.Context, in *WorldRegionClusterPublicIdRequest, opts ...grpc.CallOption) (WorldRegionsService_GetWorldRegionsByWorldRegionClusterPublicIdClient, error) {
+	stream, err := c.cc.NewStream(ctx, &WorldRegionsService_ServiceDesc.Streams[1], "/locations.WorldRegionsService/GetWorldRegionsByWorldRegionClusterPublicId", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &worldRegionsServiceGetWorldRegionsByWorldRegionClusterPublicIdClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type WorldRegionsService_GetWorldRegionsByWorldRegionClusterPublicIdClient interface {
+	Recv() (*WorldRegionResponse, error)
+	grpc.ClientStream
+}
+
+type worldRegionsServiceGetWorldRegionsByWorldRegionClusterPublicIdClient struct {
+	grpc.ClientStream
+}
+
+func (x *worldRegionsServiceGetWorldRegionsByWorldRegionClusterPublicIdClient) Recv() (*WorldRegionResponse, error) {
+	m := new(WorldRegionResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *worldRegionsServiceClient) SearchWorldRegions(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (WorldRegionsService_SearchWorldRegionsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &WorldRegionsService_ServiceDesc.Streams[1], "/locations.WorldRegionsService/SearchWorldRegions", opts...)
+	stream, err := c.cc.NewStream(ctx, &WorldRegionsService_ServiceDesc.Streams[2], "/locations.WorldRegionsService/SearchWorldRegions", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -788,6 +821,7 @@ func (c *worldRegionsServiceClient) DeleteWorldRegion(ctx context.Context, in *P
 type WorldRegionsServiceServer interface {
 	GetAllWorldRegions(*emptypb.Empty, WorldRegionsService_GetAllWorldRegionsServer) error
 	GetWorldRegionByPublicId(context.Context, *PublicIdRequest) (*WorldRegionResponse, error)
+	GetWorldRegionsByWorldRegionClusterPublicId(*WorldRegionClusterPublicIdRequest, WorldRegionsService_GetWorldRegionsByWorldRegionClusterPublicIdServer) error
 	SearchWorldRegions(*SearchRequest, WorldRegionsService_SearchWorldRegionsServer) error
 	CreateWorldRegion(context.Context, *WorldRegionRequest) (*WorldRegionResponse, error)
 	UpdateWorldRegion(context.Context, *UpdateWorldRegionRequest) (*WorldRegionResponse, error)
@@ -804,6 +838,9 @@ func (UnimplementedWorldRegionsServiceServer) GetAllWorldRegions(*emptypb.Empty,
 }
 func (UnimplementedWorldRegionsServiceServer) GetWorldRegionByPublicId(context.Context, *PublicIdRequest) (*WorldRegionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetWorldRegionByPublicId not implemented")
+}
+func (UnimplementedWorldRegionsServiceServer) GetWorldRegionsByWorldRegionClusterPublicId(*WorldRegionClusterPublicIdRequest, WorldRegionsService_GetWorldRegionsByWorldRegionClusterPublicIdServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetWorldRegionsByWorldRegionClusterPublicId not implemented")
 }
 func (UnimplementedWorldRegionsServiceServer) SearchWorldRegions(*SearchRequest, WorldRegionsService_SearchWorldRegionsServer) error {
 	return status.Errorf(codes.Unimplemented, "method SearchWorldRegions not implemented")
@@ -867,6 +904,27 @@ func _WorldRegionsService_GetWorldRegionByPublicId_Handler(srv interface{}, ctx 
 		return srv.(WorldRegionsServiceServer).GetWorldRegionByPublicId(ctx, req.(*PublicIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
+}
+
+func _WorldRegionsService_GetWorldRegionsByWorldRegionClusterPublicId_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(WorldRegionClusterPublicIdRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(WorldRegionsServiceServer).GetWorldRegionsByWorldRegionClusterPublicId(m, &worldRegionsServiceGetWorldRegionsByWorldRegionClusterPublicIdServer{stream})
+}
+
+type WorldRegionsService_GetWorldRegionsByWorldRegionClusterPublicIdServer interface {
+	Send(*WorldRegionResponse) error
+	grpc.ServerStream
+}
+
+type worldRegionsServiceGetWorldRegionsByWorldRegionClusterPublicIdServer struct {
+	grpc.ServerStream
+}
+
+func (x *worldRegionsServiceGetWorldRegionsByWorldRegionClusterPublicIdServer) Send(m *WorldRegionResponse) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 func _WorldRegionsService_SearchWorldRegions_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -972,6 +1030,11 @@ var WorldRegionsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "GetAllWorldRegions",
 			Handler:       _WorldRegionsService_GetAllWorldRegions_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "GetWorldRegionsByWorldRegionClusterPublicId",
+			Handler:       _WorldRegionsService_GetWorldRegionsByWorldRegionClusterPublicId_Handler,
 			ServerStreams: true,
 		},
 		{
