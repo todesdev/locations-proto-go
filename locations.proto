@@ -119,6 +119,10 @@ message WorldRegionResponse {
     WorldRegion world_region = 1;
 }
 
+message WorldRegionPublicIdRequest {
+    string world_region_public_id = 1;
+}
+
 service CountriesService {
     rpc GetAllCountries(google.protobuf.Empty) returns (stream CountryResponse) {}
     rpc GetCountryByPublicId(PublicIdRequest) returns (CountryResponse) {}
@@ -207,9 +211,9 @@ message CountryRegionResponse {
 }
 
 service CitiesService {
-    rpc GetAllCities(google.protobuf.Empty) returns (stream CityResponse) {}
     rpc GetCityByPublicId(PublicIdRequest) returns (CityResponse) {}
     rpc GetCitiesByCountryPublicId(CountryPublicIdRequest) returns (stream CityResponse) {}
+    rpc GetCitiesByWorldRegionPublicId(WorldRegionPublicIdRequest) returns (stream CityResponse) {}
     rpc SearchCities(SearchRequest) returns (stream CityResponse) {}
     rpc CreateCity(CityRequest) returns (CityResponse) {}
     rpc UpdateCity(UpdateCityRequest) returns (CityResponse) {}

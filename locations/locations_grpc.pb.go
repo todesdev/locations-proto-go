@@ -1755,9 +1755,9 @@ var CountryRegionsService_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CitiesServiceClient interface {
-	GetAllCities(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (CitiesService_GetAllCitiesClient, error)
 	GetCityByPublicId(ctx context.Context, in *PublicIdRequest, opts ...grpc.CallOption) (*CityResponse, error)
 	GetCitiesByCountryPublicId(ctx context.Context, in *CountryPublicIdRequest, opts ...grpc.CallOption) (CitiesService_GetCitiesByCountryPublicIdClient, error)
+	GetCitiesByWorldRegionPublicId(ctx context.Context, in *WorldRegionPublicIdRequest, opts ...grpc.CallOption) (CitiesService_GetCitiesByWorldRegionPublicIdClient, error)
 	SearchCities(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (CitiesService_SearchCitiesClient, error)
 	CreateCity(ctx context.Context, in *CityRequest, opts ...grpc.CallOption) (*CityResponse, error)
 	UpdateCity(ctx context.Context, in *UpdateCityRequest, opts ...grpc.CallOption) (*CityResponse, error)
@@ -1772,38 +1772,6 @@ func NewCitiesServiceClient(cc grpc.ClientConnInterface) CitiesServiceClient {
 	return &citiesServiceClient{cc}
 }
 
-func (c *citiesServiceClient) GetAllCities(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (CitiesService_GetAllCitiesClient, error) {
-	stream, err := c.cc.NewStream(ctx, &CitiesService_ServiceDesc.Streams[0], "/locations.CitiesService/GetAllCities", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &citiesServiceGetAllCitiesClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type CitiesService_GetAllCitiesClient interface {
-	Recv() (*CityResponse, error)
-	grpc.ClientStream
-}
-
-type citiesServiceGetAllCitiesClient struct {
-	grpc.ClientStream
-}
-
-func (x *citiesServiceGetAllCitiesClient) Recv() (*CityResponse, error) {
-	m := new(CityResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
 func (c *citiesServiceClient) GetCityByPublicId(ctx context.Context, in *PublicIdRequest, opts ...grpc.CallOption) (*CityResponse, error) {
 	out := new(CityResponse)
 	err := c.cc.Invoke(ctx, "/locations.CitiesService/GetCityByPublicId", in, out, opts...)
@@ -1814,7 +1782,7 @@ func (c *citiesServiceClient) GetCityByPublicId(ctx context.Context, in *PublicI
 }
 
 func (c *citiesServiceClient) GetCitiesByCountryPublicId(ctx context.Context, in *CountryPublicIdRequest, opts ...grpc.CallOption) (CitiesService_GetCitiesByCountryPublicIdClient, error) {
-	stream, err := c.cc.NewStream(ctx, &CitiesService_ServiceDesc.Streams[1], "/locations.CitiesService/GetCitiesByCountryPublicId", opts...)
+	stream, err := c.cc.NewStream(ctx, &CitiesService_ServiceDesc.Streams[0], "/locations.CitiesService/GetCitiesByCountryPublicId", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1838,6 +1806,38 @@ type citiesServiceGetCitiesByCountryPublicIdClient struct {
 }
 
 func (x *citiesServiceGetCitiesByCountryPublicIdClient) Recv() (*CityResponse, error) {
+	m := new(CityResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *citiesServiceClient) GetCitiesByWorldRegionPublicId(ctx context.Context, in *WorldRegionPublicIdRequest, opts ...grpc.CallOption) (CitiesService_GetCitiesByWorldRegionPublicIdClient, error) {
+	stream, err := c.cc.NewStream(ctx, &CitiesService_ServiceDesc.Streams[1], "/locations.CitiesService/GetCitiesByWorldRegionPublicId", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &citiesServiceGetCitiesByWorldRegionPublicIdClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type CitiesService_GetCitiesByWorldRegionPublicIdClient interface {
+	Recv() (*CityResponse, error)
+	grpc.ClientStream
+}
+
+type citiesServiceGetCitiesByWorldRegionPublicIdClient struct {
+	grpc.ClientStream
+}
+
+func (x *citiesServiceGetCitiesByWorldRegionPublicIdClient) Recv() (*CityResponse, error) {
 	m := new(CityResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -1908,9 +1908,9 @@ func (c *citiesServiceClient) DeleteCity(ctx context.Context, in *PublicIdReques
 // All implementations must embed UnimplementedCitiesServiceServer
 // for forward compatibility
 type CitiesServiceServer interface {
-	GetAllCities(*emptypb.Empty, CitiesService_GetAllCitiesServer) error
 	GetCityByPublicId(context.Context, *PublicIdRequest) (*CityResponse, error)
 	GetCitiesByCountryPublicId(*CountryPublicIdRequest, CitiesService_GetCitiesByCountryPublicIdServer) error
+	GetCitiesByWorldRegionPublicId(*WorldRegionPublicIdRequest, CitiesService_GetCitiesByWorldRegionPublicIdServer) error
 	SearchCities(*SearchRequest, CitiesService_SearchCitiesServer) error
 	CreateCity(context.Context, *CityRequest) (*CityResponse, error)
 	UpdateCity(context.Context, *UpdateCityRequest) (*CityResponse, error)
@@ -1922,14 +1922,14 @@ type CitiesServiceServer interface {
 type UnimplementedCitiesServiceServer struct {
 }
 
-func (UnimplementedCitiesServiceServer) GetAllCities(*emptypb.Empty, CitiesService_GetAllCitiesServer) error {
-	return status.Errorf(codes.Unimplemented, "method GetAllCities not implemented")
-}
 func (UnimplementedCitiesServiceServer) GetCityByPublicId(context.Context, *PublicIdRequest) (*CityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCityByPublicId not implemented")
 }
 func (UnimplementedCitiesServiceServer) GetCitiesByCountryPublicId(*CountryPublicIdRequest, CitiesService_GetCitiesByCountryPublicIdServer) error {
 	return status.Errorf(codes.Unimplemented, "method GetCitiesByCountryPublicId not implemented")
+}
+func (UnimplementedCitiesServiceServer) GetCitiesByWorldRegionPublicId(*WorldRegionPublicIdRequest, CitiesService_GetCitiesByWorldRegionPublicIdServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetCitiesByWorldRegionPublicId not implemented")
 }
 func (UnimplementedCitiesServiceServer) SearchCities(*SearchRequest, CitiesService_SearchCitiesServer) error {
 	return status.Errorf(codes.Unimplemented, "method SearchCities not implemented")
@@ -1954,27 +1954,6 @@ type UnsafeCitiesServiceServer interface {
 
 func RegisterCitiesServiceServer(s grpc.ServiceRegistrar, srv CitiesServiceServer) {
 	s.RegisterService(&CitiesService_ServiceDesc, srv)
-}
-
-func _CitiesService_GetAllCities_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(emptypb.Empty)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(CitiesServiceServer).GetAllCities(m, &citiesServiceGetAllCitiesServer{stream})
-}
-
-type CitiesService_GetAllCitiesServer interface {
-	Send(*CityResponse) error
-	grpc.ServerStream
-}
-
-type citiesServiceGetAllCitiesServer struct {
-	grpc.ServerStream
-}
-
-func (x *citiesServiceGetAllCitiesServer) Send(m *CityResponse) error {
-	return x.ServerStream.SendMsg(m)
 }
 
 func _CitiesService_GetCityByPublicId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -2013,6 +1992,27 @@ type citiesServiceGetCitiesByCountryPublicIdServer struct {
 }
 
 func (x *citiesServiceGetCitiesByCountryPublicIdServer) Send(m *CityResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _CitiesService_GetCitiesByWorldRegionPublicId_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(WorldRegionPublicIdRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(CitiesServiceServer).GetCitiesByWorldRegionPublicId(m, &citiesServiceGetCitiesByWorldRegionPublicIdServer{stream})
+}
+
+type CitiesService_GetCitiesByWorldRegionPublicIdServer interface {
+	Send(*CityResponse) error
+	grpc.ServerStream
+}
+
+type citiesServiceGetCitiesByWorldRegionPublicIdServer struct {
+	grpc.ServerStream
+}
+
+func (x *citiesServiceGetCitiesByWorldRegionPublicIdServer) Send(m *CityResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -2117,13 +2117,13 @@ var CitiesService_ServiceDesc = grpc.ServiceDesc{
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "GetAllCities",
-			Handler:       _CitiesService_GetAllCities_Handler,
+			StreamName:    "GetCitiesByCountryPublicId",
+			Handler:       _CitiesService_GetCitiesByCountryPublicId_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "GetCitiesByCountryPublicId",
-			Handler:       _CitiesService_GetCitiesByCountryPublicId_Handler,
+			StreamName:    "GetCitiesByWorldRegionPublicId",
+			Handler:       _CitiesService_GetCitiesByWorldRegionPublicId_Handler,
 			ServerStreams: true,
 		},
 		{
