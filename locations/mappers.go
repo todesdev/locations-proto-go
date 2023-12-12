@@ -3,7 +3,7 @@ package locations
 import "time"
 
 type MappedLocationType struct {
-	PublicId    string    `json:"public_id"`
+	PublicId    string    `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -21,7 +21,7 @@ func MapLocationType(locationType *LocationType) MappedLocationType {
 }
 
 type MappedWorldRegionCluster struct {
-	PublicId    string    `json:"public_id"`
+	PublicId    string    `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -39,7 +39,7 @@ func MapWorldRegionCluster(worldRegionCluster *WorldRegionCluster) MappedWorldRe
 }
 
 type MappedWorldRegion struct {
-	PublicId           string                   `json:"public_id"`
+	PublicId           string                   `json:"id"`
 	Name               string                   `json:"name"`
 	Description        string                   `json:"description"`
 	CreatedAt          time.Time                `json:"created_at"`
@@ -59,7 +59,7 @@ func MapWorldRegion(worldRegion *WorldRegion) MappedWorldRegion {
 }
 
 type MappedCountry struct {
-	PublicId    string    `json:"public_id"`
+	PublicId    string    `json:"id"`
 	Name        string    `json:"name"`
 	Code        string    `json:"code"`
 	CallingCode string    `json:"calling_code"`
@@ -83,7 +83,7 @@ func MapCountry(country *Country) MappedCountry {
 }
 
 type MappedCountryRegion struct {
-	PublicId  string        `json:"public_id"`
+	PublicId  string        `json:"id"`
 	Name      string        `json:"name"`
 	Code      string        `json:"code"`
 	Longitude float64       `json:"longitude"`
@@ -107,7 +107,7 @@ func MapCountryRegion(countryRegion *CountryRegion) MappedCountryRegion {
 }
 
 type MappedCity struct {
-	PublicId      string              `json:"public_id"`
+	PublicId      string              `json:"id"`
 	Name          string              `json:"name"`
 	Code          string              `json:"code"`
 	Longitude     float64             `json:"longitude"`
@@ -133,7 +133,7 @@ func MapCity(city *City) MappedCity {
 }
 
 type MappedAddress struct {
-	PublicId     string             `json:"public_id"`
+	PublicId     string             `json:"id"`
 	AddressLine1 string             `json:"address_line_1"`
 	AddressLine2 string             `json:"address_line_2"`
 	ZipCode      string             `json:"zip_code"`
