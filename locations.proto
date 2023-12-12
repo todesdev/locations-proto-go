@@ -155,9 +155,14 @@ message CountryResponse {
     Country country = 1;
 }
 
+message CountryPublicIdRequest {
+    string country_public_id = 1;
+}
+
 service CountryRegionsService {
     rpc GetAllCountryRegions(google.protobuf.Empty) returns (stream CountryRegionResponse) {}
     rpc GetCountryRegionByPublicId(PublicIdRequest) returns (CountryRegionResponse) {}
+    rpc GetCountryRegionsByCountryPublicId(CountryPublicIdRequest) returns (stream CountryRegionResponse) {}
     rpc SearchCountryRegions(SearchRequest) returns (stream CountryRegionResponse) {}
     rpc CreateCountryRegion(CountryRegionRequest) returns (CountryRegionResponse) {}
     rpc UpdateCountryRegion(UpdateCountryRegionRequest) returns (CountryRegionResponse) {}
@@ -241,9 +246,6 @@ message CityResponse {
     City city = 1;
 }
 
-message CountryPublicIdRequest {
-    string country_public_id = 1;
-}
 
 service AddressesService {
     rpc GetAddressByPublicId(PublicIdRequest) returns (AddressResponse) {}

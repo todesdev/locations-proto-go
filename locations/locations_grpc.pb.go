@@ -1310,6 +1310,7 @@ var CountriesService_ServiceDesc = grpc.ServiceDesc{
 type CountryRegionsServiceClient interface {
 	GetAllCountryRegions(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (CountryRegionsService_GetAllCountryRegionsClient, error)
 	GetCountryRegionByPublicId(ctx context.Context, in *PublicIdRequest, opts ...grpc.CallOption) (*CountryRegionResponse, error)
+	GetCountryRegionsByCountryPublicId(ctx context.Context, in *CountryPublicIdRequest, opts ...grpc.CallOption) (CountryRegionsService_GetCountryRegionsByCountryPublicIdClient, error)
 	SearchCountryRegions(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (CountryRegionsService_SearchCountryRegionsClient, error)
 	CreateCountryRegion(ctx context.Context, in *CountryRegionRequest, opts ...grpc.CallOption) (*CountryRegionResponse, error)
 	UpdateCountryRegion(ctx context.Context, in *UpdateCountryRegionRequest, opts ...grpc.CallOption) (*CountryRegionResponse, error)
@@ -1365,8 +1366,40 @@ func (c *countryRegionsServiceClient) GetCountryRegionByPublicId(ctx context.Con
 	return out, nil
 }
 
+func (c *countryRegionsServiceClient) GetCountryRegionsByCountryPublicId(ctx context.Context, in *CountryPublicIdRequest, opts ...grpc.CallOption) (CountryRegionsService_GetCountryRegionsByCountryPublicIdClient, error) {
+	stream, err := c.cc.NewStream(ctx, &CountryRegionsService_ServiceDesc.Streams[1], "/locations.CountryRegionsService/GetCountryRegionsByCountryPublicId", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &countryRegionsServiceGetCountryRegionsByCountryPublicIdClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type CountryRegionsService_GetCountryRegionsByCountryPublicIdClient interface {
+	Recv() (*CountryRegionResponse, error)
+	grpc.ClientStream
+}
+
+type countryRegionsServiceGetCountryRegionsByCountryPublicIdClient struct {
+	grpc.ClientStream
+}
+
+func (x *countryRegionsServiceGetCountryRegionsByCountryPublicIdClient) Recv() (*CountryRegionResponse, error) {
+	m := new(CountryRegionResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *countryRegionsServiceClient) SearchCountryRegions(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (CountryRegionsService_SearchCountryRegionsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &CountryRegionsService_ServiceDesc.Streams[1], "/locations.CountryRegionsService/SearchCountryRegions", opts...)
+	stream, err := c.cc.NewStream(ctx, &CountryRegionsService_ServiceDesc.Streams[2], "/locations.CountryRegionsService/SearchCountryRegions", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1430,6 +1463,7 @@ func (c *countryRegionsServiceClient) DeleteCountryRegion(ctx context.Context, i
 type CountryRegionsServiceServer interface {
 	GetAllCountryRegions(*emptypb.Empty, CountryRegionsService_GetAllCountryRegionsServer) error
 	GetCountryRegionByPublicId(context.Context, *PublicIdRequest) (*CountryRegionResponse, error)
+	GetCountryRegionsByCountryPublicId(*CountryPublicIdRequest, CountryRegionsService_GetCountryRegionsByCountryPublicIdServer) error
 	SearchCountryRegions(*SearchRequest, CountryRegionsService_SearchCountryRegionsServer) error
 	CreateCountryRegion(context.Context, *CountryRegionRequest) (*CountryRegionResponse, error)
 	UpdateCountryRegion(context.Context, *UpdateCountryRegionRequest) (*CountryRegionResponse, error)
@@ -1446,6 +1480,9 @@ func (UnimplementedCountryRegionsServiceServer) GetAllCountryRegions(*emptypb.Em
 }
 func (UnimplementedCountryRegionsServiceServer) GetCountryRegionByPublicId(context.Context, *PublicIdRequest) (*CountryRegionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCountryRegionByPublicId not implemented")
+}
+func (UnimplementedCountryRegionsServiceServer) GetCountryRegionsByCountryPublicId(*CountryPublicIdRequest, CountryRegionsService_GetCountryRegionsByCountryPublicIdServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetCountryRegionsByCountryPublicId not implemented")
 }
 func (UnimplementedCountryRegionsServiceServer) SearchCountryRegions(*SearchRequest, CountryRegionsService_SearchCountryRegionsServer) error {
 	return status.Errorf(codes.Unimplemented, "method SearchCountryRegions not implemented")
@@ -1509,6 +1546,27 @@ func _CountryRegionsService_GetCountryRegionByPublicId_Handler(srv interface{}, 
 		return srv.(CountryRegionsServiceServer).GetCountryRegionByPublicId(ctx, req.(*PublicIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
+}
+
+func _CountryRegionsService_GetCountryRegionsByCountryPublicId_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(CountryPublicIdRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(CountryRegionsServiceServer).GetCountryRegionsByCountryPublicId(m, &countryRegionsServiceGetCountryRegionsByCountryPublicIdServer{stream})
+}
+
+type CountryRegionsService_GetCountryRegionsByCountryPublicIdServer interface {
+	Send(*CountryRegionResponse) error
+	grpc.ServerStream
+}
+
+type countryRegionsServiceGetCountryRegionsByCountryPublicIdServer struct {
+	grpc.ServerStream
+}
+
+func (x *countryRegionsServiceGetCountryRegionsByCountryPublicIdServer) Send(m *CountryRegionResponse) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 func _CountryRegionsService_SearchCountryRegions_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -1614,6 +1672,11 @@ var CountryRegionsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "GetAllCountryRegions",
 			Handler:       _CountryRegionsService_GetAllCountryRegions_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "GetCountryRegionsByCountryPublicId",
+			Handler:       _CountryRegionsService_GetCountryRegionsByCountryPublicId_Handler,
 			ServerStreams: true,
 		},
 		{
