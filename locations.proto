@@ -1,0 +1,297 @@
+syntax = "proto3";
+
+package locations;
+
+option go_package = "api.todes.ru/proto/locations";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+message PublicIdRequest {
+    string public_id = 1;
+}
+
+message SearchRequest {
+    string search_term = 1;
+}
+
+service LocationTypesService {
+    rpc GetAllLocationTypes(google.protobuf.Empty) returns (stream LocationTypeResponse) {}
+    rpc GetLocationTypeByPublicId(PublicIdRequest) returns (LocationTypeResponse) {}
+    rpc SearchLocationTypes(SearchRequest) returns (stream LocationTypeResponse) {}
+    rpc CreateLocationType(LocationTypeRequest) returns (LocationTypeResponse) {}
+    rpc UpdateLocationType(UpdateLocationTypeRequest) returns (LocationTypeResponse) {}
+    rpc DeleteLocationType(PublicIdRequest) returns (LocationTypeResponse) {}
+}
+
+message LocationType {
+    string public_id = 1;
+    string name = 2;
+    string description = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
+}
+
+message LocationTypeRequest {
+    string name = 1;
+    string description = 2;
+}
+
+message UpdateLocationTypeRequest {
+    string public_id = 1;
+    string name = 2;
+    string description = 3;
+}
+
+message LocationTypeResponse {
+    LocationType location_type = 1;
+}
+
+service WorldRegionClustersService {
+    rpc GetAllWorldRegionClusters(google.protobuf.Empty) returns (stream WorldRegionClusterResponse) {}
+    rpc GetWorldRegionClusterByPublicId(PublicIdRequest) returns (WorldRegionClusterResponse) {}
+    rpc SearchWorldRegionClusters(SearchRequest) returns (stream WorldRegionClusterResponse) {}
+    rpc CreateWorldRegionCluster(WorldRegionClusterRequest) returns (WorldRegionClusterResponse) {}
+    rpc UpdateWorldRegionCluster(UpdateWorldRegionClusterRequest) returns (WorldRegionClusterResponse) {}
+    rpc DeleteWorldRegionCluster(PublicIdRequest) returns (WorldRegionClusterResponse) {}
+}
+
+message WorldRegionCluster {
+    string public_id = 1;
+    string name = 2;
+    string description = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
+}
+
+message WorldRegionClusterRequest {
+    string name = 1;
+    string description = 2;
+}
+
+message UpdateWorldRegionClusterRequest {
+    string public_id = 1;
+    string name = 2;
+    string description = 3;
+}
+
+message WorldRegionClusterResponse {
+    WorldRegionCluster world_region_cluster = 1;
+}
+
+service WorldRegionsService {
+    rpc GetAllWorldRegions(google.protobuf.Empty) returns (stream WorldRegionResponse) {}
+    rpc GetWorldRegionByPublicId(PublicIdRequest) returns (WorldRegionResponse) {}
+    rpc SearchWorldRegions(SearchRequest) returns (stream WorldRegionResponse) {}
+    rpc CreateWorldRegion(WorldRegionRequest) returns (WorldRegionResponse) {}
+    rpc UpdateWorldRegion(UpdateWorldRegionRequest) returns (WorldRegionResponse) {}
+    rpc DeleteWorldRegion(PublicIdRequest) returns (WorldRegionResponse) {}
+}
+
+message WorldRegion {
+    string public_id = 1;
+    string name = 2;
+    string description = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
+    WorldRegionCluster world_region_cluster = 6;
+}
+
+message WorldRegionRequest {
+    string world_region_cluster_public_id = 1;
+    string name = 2;
+    string description = 3;
+}
+
+message UpdateWorldRegionRequest {
+    string public_id = 1;
+    string world_region_cluster_public_id = 2;
+    string name = 3;
+    string description = 4;
+}
+
+message WorldRegionResponse {
+    WorldRegion world_region = 1;
+}
+
+service CountriesService {
+    rpc GetAllCountries(google.protobuf.Empty) returns (stream CountryResponse) {}
+    rpc GetCountryByPublicId(PublicIdRequest) returns (CountryResponse) {}
+    rpc SearchCountries(SearchRequest) returns (stream CountryResponse) {}
+    rpc CreateCountry(CountryRequest) returns (CountryResponse) {}
+    rpc UpdateCountry(UpdateCountryRequest) returns (CountryResponse) {}
+    rpc DeleteCountry(PublicIdRequest) returns (CountryResponse) {}
+}
+
+message Country {
+    string public_id = 1;
+    string name = 2;
+    string code = 3;
+    string calling_code = 4;
+    double longitude = 5;
+    double latitude = 6;
+    google.protobuf.Timestamp created_at = 7;
+    google.protobuf.Timestamp updated_at = 8;
+}
+
+message CountryRequest {
+    string name = 1;
+    string code = 2;
+    string calling_code = 3;
+    double longitude = 4;
+    double latitude = 5;
+}
+
+message UpdateCountryRequest {
+    string public_id = 1;
+    string name = 2;
+    string code = 3;
+    string calling_code = 4;
+    double longitude = 5;
+    double latitude = 6;
+}
+
+message CountryResponse {
+    Country country = 1;
+}
+
+service CountryRegionsService {
+    rpc GetAllCountryRegions(google.protobuf.Empty) returns (stream CountryRegionResponse) {}
+    rpc GetCountryRegionByPublicId(PublicIdRequest) returns (CountryRegionResponse) {}
+    rpc SearchCountryRegions(SearchRequest) returns (stream CountryRegionResponse) {}
+    rpc CreateCountryRegion(CountryRegionRequest) returns (CountryRegionResponse) {}
+    rpc UpdateCountryRegion(UpdateCountryRegionRequest) returns (CountryRegionResponse) {}
+    rpc DeleteCountryRegion(PublicIdRequest) returns (CountryRegionResponse) {}
+}
+
+message CountryRegion {
+    string public_id = 1;
+    string name = 2;
+    string code = 3;
+    double longitude = 4;
+    double latitude = 5;
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+    Country country = 8;
+}
+
+message CountryRegionRequest {
+    string country_public_id = 1;
+    string name = 2;
+    string code = 3;
+    double longitude = 4;
+    double latitude = 5;
+}
+
+message UpdateCountryRegionRequest {
+    string public_id = 1;
+    string country_public_id = 2;
+    string name = 3;
+    string code = 4;
+    double longitude = 5;
+    double latitude = 6;
+}
+
+message CountryRegionResponse {
+    CountryRegion country_region = 1;
+}
+
+service CitiesService {
+    rpc GetAllCities(google.protobuf.Empty) returns (stream CityResponse) {}
+    rpc GetCityByPublicId(PublicIdRequest) returns (CityResponse) {}
+    rpc GetCitiesByCountryPublicId(CountryPublicIdRequest) returns (stream CityResponse) {}
+    rpc SearchCities(SearchRequest) returns (stream CityResponse) {}
+    rpc CreateCity(CityRequest) returns (CityResponse) {}
+    rpc UpdateCity(UpdateCityRequest) returns (CityResponse) {}
+    rpc DeleteCity(PublicIdRequest) returns (CityResponse) {}
+}
+
+message City {
+    string public_id = 1;
+    string name = 2;
+    string code = 3;
+    double longitude = 4;
+    double latitude = 5;
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+    CountryRegion country_region = 8;
+    WorldRegion world_region = 9;
+}
+
+message CityRequest {
+    string country_region_public_id = 1;
+    string world_region_public_id = 2;
+    string name = 3;
+    string code = 4;
+    double longitude = 5;
+    double latitude = 6;
+}
+
+message UpdateCityRequest {
+    string public_id = 1;
+    string country_region_public_id = 2;
+    string world_region_public_id = 3;
+    string name = 4;
+    string code = 5;
+    double longitude = 6;
+    double latitude = 7;
+}
+
+message CityResponse {
+    City city = 1;
+}
+
+message CountryPublicIdRequest {
+    string country_public_id = 1;
+}
+
+service AddressesService {
+    rpc GetAddressByPublicId(PublicIdRequest) returns (AddressResponse) {}
+    rpc GetAddressesByPublicIds(AddressPublicIdsRequest) returns (stream AddressResponse) {}
+    rpc SearchAddresses(SearchRequest) returns (stream AddressResponse) {}
+    rpc CreateAddress(AddressRequest) returns (AddressResponse) {}
+    rpc UpdateAddress(UpdateAddressRequest) returns (AddressResponse) {}
+    rpc DeleteAddress(PublicIdRequest) returns (AddressResponse) {}
+}
+
+message Address {
+    string public_id = 1;
+    string address_line_1 = 2;
+    string address_line_2 = 3;
+    string zip_code = 4;
+    double longitude = 5;
+    double latitude = 6;
+    google.protobuf.Timestamp created_at = 7;
+    google.protobuf.Timestamp updated_at = 8;
+    LocationType location_type = 9;
+    City city = 10;
+}
+
+message AddressRequest {
+    string location_type_public_id = 1;
+    string city_public_id = 2;
+    string address_line_1 = 3;
+    string address_line_2 = 4;
+    string zip_code = 5;
+    double longitude = 6;
+    double latitude = 7;
+}
+
+message UpdateAddressRequest {
+    string public_id = 1;
+    string location_type_public_id = 2;
+    string city_public_id = 3;
+    string address_line_1 = 4;
+    string address_line_2 = 5;
+    string zip_code = 6;
+    double longitude = 7;
+    double latitude = 8;
+}
+
+message AddressResponse {
+    Address address = 1;
+}
+
+message AddressPublicIdsRequest {
+    repeated string address_public_id = 1;
+}
